@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { PharmacyScraper, ScrapeResult, DEFAULT_HEADERS } from './types';
+import { isProductCompatible } from '@/lib/medicineMatcher';
 
 export interface UltrafarmaResult extends ScrapeResult {
     priceDe: number | null;
@@ -142,9 +143,11 @@ export class UltrafarmaScraper implements PharmacyScraper {
                     validItems = validItems.filter(item => {
                         const iName = item.name.toLowerCase();
                         if (isCompoundSearchUF && substanceKeywordsUF && substanceKeywordsUF.length > 1) {
-                            return substanceKeywordsUF.every((kw: string) => iName.includes(kw));
+                            if (!substanceKeywordsUF.every((kw: string) => iName.includes(kw))) return false;
+                        } else {
+                            if (!criticalWords.some(word => iName.includes(word))) return false;
                         }
-                        return criticalWords.some(word => iName.includes(word));
+                        return isProductCompatible(termoBusca, item.name).compatible;
                     });
 
                     if (validItems.length > 0) {

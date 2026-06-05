@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import { PharmacyScraper, ScrapeResult, DEFAULT_HEADERS } from './types';
+import { isProductCompatible } from '@/lib/medicineMatcher';
 
 export interface PagueMenosResult extends ScrapeResult {
     isLabDiscount?: boolean;
@@ -129,9 +130,11 @@ export class PagueMenosScraper implements PharmacyScraper {
                         validProducts = validProducts.filter((p: any) => {
                             const pName = (p.productName ?? '').toLowerCase();
                             if (isCompoundSearch && substanceKeywords && substanceKeywords.length > 1) {
-                                return substanceKeywords.every(kw => pName.includes(kw));
+                                if (!substanceKeywords.every(kw => pName.includes(kw))) return false;
+                            } else {
+                                if (!criticalWords.some(word => pName.includes(word))) return false;
                             }
-                            return criticalWords.some(word => pName.includes(word));
+                            return isProductCompatible(searchTerm, p.productName ?? '').compatible;
                         });
 
                         if (validProducts.length > 0) {

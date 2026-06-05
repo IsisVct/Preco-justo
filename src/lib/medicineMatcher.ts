@@ -120,3 +120,81 @@ export function parsePackageInfo(description: string): ParsedPackageInfo {
   };
 }
 
+export interface ParsedProductDetails {
+  dosages: string[];
+  volume: number | null;
+  quantity: number | null;
+  isLiquid: boolean;
+  isSolid: boolean;
+}
+
+export function parseProductDetails(text: string): ParsedProductDetails {
+  const lower = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+  // Extrai dosagens como 500mg/ml, 50mg/ml, 500mg, 1g, 1000mg, 0.25mg
+  const dosageMatches = lower.match(/\b\d+(?:[.,]\d+)?\s*(?:mg\/ml|mg\/g|mg|mcg|ui|g)\b/g) || [];
+  const dosages = dosageMatches.map(d => d.replace(/\s+/g, ''));
+
+  // Extrai volumes em ml (ex: 10ml, 20ml, 100ml)
+  const mlMatches = lower.match(/\b(\d+(?:[.,]\d+)?)\s*ml\b/g) || [];
+  let volume: number | null = null;
+  for (const match of mlMatches) {
+    const val = parseFloat(match.replace(/\s+/g, '').replace('ml', ''));
+    const idx = lower.indexOf(match);
+    if (idx > 3) {
+      const context = lower.slice(idx - 3, idx);
+      if (context.includes('mg/') || context.includes('/')) {
+        continue; // parte da dosagem (ex: 500mg/ml)
+      }
+    }
+    volume = val;
+    break;
+  }
+
+  // Extrai quantidade em comprimidos, cápsulas, etc.
+  const qtyMatch = lower.match(/\b(\d+)\s*(?:comprimido|cápsula|capsula|dragea|envelope|sache|ampola|seringa|gota)s?\b/) 
+    || lower.match(/(?:com|cx|caixa|cpr|caps?|comp?|drg|drageas?|\s|^)(\b\d+\b)\s*(?:comprimidos?|c[aá]psulas?|dr[aá]geas?|caps?|comp?|cpr|cp|drg)s?/);
+  const quantity = qtyMatch ? parseInt(qtyMatch[1], 10) : null;
+
+  // Classificação da forma farmacêutica
+  const isLiquid = /\b(?:gotas?|solucao|xarope|oral|ml|injetavel|ampolas?|frascos?)\b/.test(lower);
+  const isSolid = /\b(?:comprimidos?|capsulas?|drageas?|cpr|cp|comp?|saches?|envelopes?)\b/.test(lower);
+
+  return {
+    dosages,
+    volume,
+    quantity,
+    isLiquid,
+    isSolid
+  };
+}
+
+export function isProductCompatible(query: string, candidateName: string): { compatible: boolean; reason?: string } {
+  const qInfo = parseProductDetails(query);
+  const cInfo = parseProductDetails(candidateName);
+
+  // 1. Incompatibilidade de dosagem/concentração
+  if (qInfo.dosages.length > 0 && cInfo.dosages.length > 0) {
+    const primaryQDosage = qInfo.dosages[0];
+    const normalizeDosage = (d: string) => d.toLowerCase().replace('1g', '1000mg').replace('1.0g', '1000mg');
+    const normQ = normalizeDosage(primaryQDosage);
+    const hasMatch = cInfo.dosages.some(d => normalizeDosage(d) === normQ);
+    if (!hasMatch) {
+      return { 
+        compatible: false, 
+        reason: `Dosagem incompatível: ${primaryQDosage} no alvo vs ${cInfo.dosages.join(', ')} no candidato` 
+      };
+    }
+  }
+
+  // 2. Incompatibilidade de forma (Líquido vs Sólido)
+  if (qInfo.isLiquid && !qInfo.isSolid && cInfo.isSolid && !cInfo.isLiquid) {
+    return { compatible: false, reason: 'Forma incompatível: alvo é líquido e candidato é sólido' };
+  }
+  if (qInfo.isSolid && !qInfo.isLiquid && cInfo.isLiquid && !cInfo.isSolid) {
+    return { compatible: false, reason: 'Forma incompatível: alvo é sólido e candidato é líquido' };
+  }
+
+  return { compatible: true };
+}
+

@@ -230,7 +230,7 @@ export async function GET(request: Request) {
     let result = await scraper.scrapePrice(exactUrl);
 
     if (!result.success && pharmacy === 'Drogasil') {
-      await new Promise(r => setTimeout(r, 1500));
+      await new Promise(r => setTimeout(r, 500));
       result = await scraper.scrapePrice(exactUrl);
     }
 
@@ -242,7 +242,7 @@ export async function GET(request: Request) {
           .upsert({
             pharmacy,
             medicine_name: medicineName,
-            url: exactUrl,
+            url: result.url || exactUrl,
             price: result.price,
             updated_at: new Date().toISOString()
           }, { onConflict: 'pharmacy,medicine_name' });
