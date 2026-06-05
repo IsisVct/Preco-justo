@@ -14,13 +14,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || 
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000")
+  ),
   title: "Preço Justo — Consulte o Preço Máximo de Medicamentos",
   description: "Não pague mais do que o teto da ANVISA permite. Consulte o Preço Máximo ao Consumidor (PMC) de medicamentos oficial da CMED com o Preço Justo.",
+  icons: {
+    icon: "/logo-icon.png",
+    shortcut: "/logo-icon.png",
+    apple: "/logo-icon.png",
+  },
   openGraph: {
     title: "Preço Justo — Consulte o Preço Máximo de Medicamentos",
     description: "Evite cobranças abusivas. Consulte o teto legal de preços de remédios da ANVISA/CMED.",
     locale: "pt_BR",
     type: "website",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Preço Justo Logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Preço Justo — Consulte o Preço Máximo de Medicamentos",
+    description: "Evite cobranças abusivas. Consulte o teto legal de preços de remédios da ANVISA/CMED.",
+    images: ["/logo.png"],
   },
 };
 
