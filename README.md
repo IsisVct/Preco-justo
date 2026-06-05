@@ -1,81 +1,90 @@
-# 💊 Preço Justo — Comparador de Preços de Medicamentos
+<div align="center">
 
-> Consulte o teto ANVISA e compare preços em tempo real nas principais farmácias do Brasil.
+# 💊 Preço Justo 
+**Comparador Inteligente de Preços de Medicamentos**
 
-**Preço Justo** é uma plataforma web open-source que permite ao consumidor brasileiro consultar o **Preço Máximo ao Consumidor (PMC)** regulado pela ANVISA/CMED e comparar com os preços praticados ao vivo em farmácias como Drogasil, Pague Menos e Ultrafarma — tudo em uma única tela.
+> *Consulte o teto regulatório da ANVISA e compare preços em tempo real nas principais farmácias do Brasil, garantindo uma compra justa e transparente.*
+
+<br>
+
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+<br>
+
+### 🌗 Tema Light & Dark
+<p align="center">
+  <img width="800" alt="tela_preco-justo-light" src="https://github.com/user-attachments/assets/77a06a5d-49ae-430a-8146-497e30a5e626" />
+  <img width="800" alt="tela_preco-justo" src="https://github.com/user-attachments/assets/f1321e0b-eca2-42b3-91df-0da9a0c6b422" />
+</p>
+
+</div>
 
 ---
-
-<!-- 📸 PRINT DA TELA INICIAL: Insira aqui um print ou GIF da página inicial com o Autocomplete ativo -->
-<!-- Exemplo: ![Autocomplete Preço Justo](caminho/para/imagem.png) -->
 
 ## ✨ Funcionalidades
 
-- 🔍 **Busca inteligente** por nome comercial ou princípio ativo (base CMED com 21k+ medicamentos)
-- 💰 **Teto ANVISA** calculado por estado (ICMS variável por UF)
-- 🏪 **Comparação ao vivo** de preços em Drogasil, Pague Menos e Ultrafarma via web scraping
-- 🏥 **Detecção automática** de produtos hospitalares (não disponíveis em varejo)
-- 🧪 **Validação de marca** para medicamentos de referência (evita comparar marcas diferentes)
-- 💊 **Detecção de compostos** (ex: Dipirona+Cafeína+Orfenadrina) com busca correta por substância
-- 🏛️ **Disponibilidade no SUS / Farmácia Popular** integrada
-- 🌗 **Tema claro/escuro** com persistência no localStorage
-- 📍 **Seletor de estado** para cálculo exato do ICMS regional
+- 🔍 **Busca Inteligente:** Consulta ultrarrápida por nome comercial ou princípio ativo em uma base de mais de 21 mil medicamentos.
+- 💰 **Teto ANVISA Dinâmico:** Cálculo do Preço Máximo ao Consumidor (PMC) ajustado automaticamente pelo ICMS do estado selecionado.
+- 🏪 **Comparação ao Vivo:** Web scraping integrado que busca preços simultâneos na Drogasil, Pague Menos e Ultrafarma.
+- 🏥 **Filtro de Uso Restrito:** Detecção automática de produtos hospitalares (não disponíveis em varejo).
+- 🧪 **Validação de Referência e Compostos:** Motor de busca que respeita marcas de referência e entende composições complexas (ex: *Dipirona + Cafeína + Orfenadrina*).
+- 🏛️ **Integração SUS / Farmácia Popular:** Tags visuais indicando a disponibilidade de retirada gratuita na rede pública.
+- 🌗 **UI Responsiva e Adaptável:** Tema claro/escuro nativo com persistência no `localStorage`.
+
+<div align="center">
+  <img width="800" alt="tela_preco-justo-light-resultado" src="https://github.com/user-attachments/assets/827ca80f-011d-4fd1-a1c3-2ea3cc5bc603" />
+</div>
 
 ---
 
-<!-- 📸 PRINT DOS RESULTADOS: Insira aqui um print da tabela de resultados exibindo o teto e os preços comparados -->
-<!-- Exemplo: ![Resultados do Preço Justo](caminho/para/imagem.png) -->
+## 🧠 Desafios e Arquitetura
 
-## 🧠 Desafios e Dificuldades do Projeto
+O desenvolvimento do **Preço Justo** exigiu a superação de desafios complexos de Engenharia de Dados e Infraestrutura Web:
 
-O desenvolvimento do **Preço Justo** envolveu superar diversos desafios de Engenharia de Dados e Infraestrutura Web:
+1. **Tratamento de Dados Governamentais (ETL):**
+   * **O Problema:** A tabela da CMED/ANVISA possui formatação instável, com cabeçalhos dinâmicos que mudam de posição mensalmente e preâmbulos textuais irregulares.
+   * **A Solução:** Desenvolvimento de scripts analíticos em Python (Pandas) que detectam dinamicamente a linha de cabeçalho verdadeira, higienizam os dados e injetam os milhares de registros de forma otimizada (em lotes) no Supabase.
 
-1. **Tratamento de Dados Governamentais complexos (Planilhas CMED):**
-   * A tabela da ANVISA possui dezenas de colunas, cabeçalhos dinâmicos que mudam de posição mensalmente e um preâmbulo textual antes das tabelas de dados.
-   * **Solução:** Desenvolvemos scripts inteligentes em Python (Pandas) e Node.js que detectam dinamicamente a linha de cabeçalho verdadeira, pulam o preâmbulo administrativo e injetam os mais de 21 mil medicamentos de forma otimizada em lotes no Supabase.
-   <!-- 📸 PRINT DO TERMINAL/SCRIPT: Insira aqui um print do terminal rodando o script de importação da planilha -->
+2. **Web Scraping Resiliente:**
+   * **O Problema:** Redes de farmácias utilizam WAFs (Web Application Firewalls) agressivos que bloqueiam requisições automatizadas.
+   * **A Solução:** Backend Next.js configurado com sistema de rotação de *headers*, regras *fuzzy* para padronização de dosagens (mg, ml, caps) e estratégia de *retries* programados para garantir a coleta dos dados.
 
-2. **Web Scraping resiliente e Bypass de WAF/Bloqueios:**
-   * Farmácias utilizam WAFs (Web Application Firewalls) agressivos que bloqueiam requisições de servidores.
-   * **Solução:** Otimizamos o backend com um sistema de agentes/headers simulados, regras fuzzy para tratar dosagens (ex: mg, ml, caps) e retries programados em endpoints de busca.
-
-3. **Autocomplemento veloz (Autocomplete):**
-   * Buscar por texto puro em mais de 21 mil remédios no Supabase de forma rápida exigiu otimização.
-   * **Solução:** Criamos índices invertidos GIN (`to_tsvector`) no PostgreSQL para garantir buscas instantâneas a cada caractere digitado pelo usuário.
+3. **Performance no Autocomplete:**
+   * **O Problema:** Buscar correspondências parciais em mais de 21.000 registros de texto puro de forma síncrona geraria gargalos de performance.
+   * **A Solução:** Implementação de índices invertidos **GIN (`to_tsvector`)** nativos do PostgreSQL, garantindo tempo de resposta na casa dos milissegundos a cada caractere digitado.
 
 ---
 
-## 🛠️ Stack
+## 🛠️ Stack Tecnológico
 
 | Camada | Tecnologia | Detalhes |
 |---|---|---|
-| **Frontend & Backend** | [Next.js 16](https://nextjs.org) (App Router) | React 19, TypeScript e Server-Side API Routes para bypass de CORS |
-| **Banco de Dados** | [Supabase](https://supabase.com) (PostgreSQL) | Índices GIN (`to_tsvector`) para busca textual ultrarrápida no autocomplete |
-| **Web Scraping** | Cheerio + Fetch nativo | Robôs de scraping integrados em rotas de API para busca ao vivo em Drogasil, Pague Menos e Ultrafarma |
-| **Interface & Estilo** | Tailwind CSS v4 + Framer Motion | Animações fluidas, variáveis CSS nativas (`@theme inline`), design responsivo otimizado para mobile e suporte a modo escuro/claro |
-| **Engenharia de Dados (ETL)** | Python 3 + Pandas | Scripts robustos para extração, limpeza e importação de planilhas CMED complexas (`BeautifulSoup4`, `openpyxl`, `supabase-py`) |
-| **Fonte de Dados** | [Tabela CMED/ANVISA](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos) | Base oficial de Preço Máximo ao Consumidor (PMC) do governo federal |
+| **Frontend & Backend** | Next.js 16 (App Router) | React 19, TypeScript e Server-Side API Routes para bypass de CORS. |
+| **Banco de Dados** | Supabase (PostgreSQL) | Estruturado com índices GIN para busca textual de altíssima performance. |
+| **Web Scraping** | Cheerio + Fetch nativo | Robôs integrados em rotas de API para busca concorrente nos e-commerces. |
+| **Interface & Estilo** | Tailwind CSS v4 + Framer Motion | Animações fluidas e design responsivo, com variáveis CSS nativas (`@theme inline`). |
+| **Engenharia de Dados** | Python 3 + Pandas | Scripts robustos para extração e limpeza de dados governamentais (`BeautifulSoup4`, `openpyxl`). |
+| **Fonte de Dados Base** | [Tabela CMED/ANVISA](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos) | Dados oficiais de teto regulatório (PMC). |
 
 ---
 
 ## 🚀 Como rodar localmente
 
-### 1. Clone o repositório
+### 1. Clonar e instalar dependências
 
 ```bash
 git clone https://github.com/IsisVct/Preco-justo.git
 cd Preco-justo
-```
-
-### 2. Instale as dependências
-
-```bash
 npm install
 ```
 
-### 3. Configure as variáveis de ambiente
+### 2. Configurar variáveis de ambiente
 
-Crie um arquivo `.env.local` na raiz:
+Crie um arquivo `.env.local` na raiz do projeto com as suas credenciais do Supabase:
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
@@ -83,48 +92,53 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_anon
 SUPABASE_SERVICE_ROLE_KEY=sua_chave_service_role
 ```
 
-### 4. Importe a tabela CMED
+### 3. Pipeline de Dados (Carga Inicial)
 
-Baixe a planilha CMED mais recente em [anvisa.gov.br](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos) e salve como `tabela_cmed.xlsx` na raiz do projeto. Depois:
+Baixe a planilha CMED mais recente neste link oficial, salve como `tabela_cmed.xlsx` na raiz do projeto e execute a automação:
 
 ```bash
-# Crie o ambiente virtual Python
+# Crie e ative o ambiente virtual Python
 python -m venv venv
-venv\Scripts\activate   # Windows
-# source venv/bin/activate  # Linux/Mac
+venv\Scripts\activate   # No Windows
+# source venv/bin/activate  # No Linux/Mac
 
+# Instale as dependências de engenharia de dados
 pip install pandas openpyxl supabase python-dotenv
+
+# Execute a injeção no banco de dados
 python scripts/import_xlsx.py
 ```
 
-### 5. Rode o servidor de desenvolvimento
+### 4. Iniciar a aplicação
 
 ```bash
 npm run dev
 ```
 
-Acesse [http://localhost:3000](http://localhost:3000).
+Acesse `http://localhost:3000` no seu navegador.
 
 ---
 
-## 🗄️ Estrutura do banco de dados (Supabase)
+## 🗄️ Estrutura do Banco de Dados
+
+A arquitetura DDL base configurada no Supabase:
 
 ```sql
 create table medicines (
-  id            bigserial primary key,
-  name          text not null,
+  id             bigserial primary key,
+  name           text not null,
   active_ingredient text,
-  laboratory    text,
-  description   text,
-  max_price     numeric,
-  is_generic    boolean default false,
+  laboratory     text,
+  description    text,
+  max_price      numeric,
+  is_generic     boolean default false,
   sus_availability boolean default false,
   farmaciapopular_availability boolean default false,
-  sus_note      text,
-  created_at    timestamptz default now()
+  sus_note       text,
+  created_at     timestamptz default now()
 );
 
--- Índice para busca por texto
+-- Índices essenciais para o motor de busca
 create index idx_medicines_name on medicines using gin(to_tsvector('portuguese', name));
 create index idx_medicines_ai   on medicines using gin(to_tsvector('portuguese', active_ingredient));
 ```
@@ -133,16 +147,16 @@ create index idx_medicines_ai   on medicines using gin(to_tsvector('portuguese',
 
 ## ⚠️ Aviso Legal
 
-Os preços das farmácias são extraídos em tempo real via **web scraping** de sites terceiros. Por conta da natureza dinâmica das páginas web (que podem sofrer alterações de layout, seletores ou bloqueios temporários), **podem ocorrer erros, atrasos ou divergências nos preços exibidos**. Os valores apresentados são os preços base, sem considerar descontos adicionais por CPF, convênios ou programas de fidelidade (PBM). O teto ANVISA é calculado a partir da base pública da CMED. Este é um projeto **estritamente educacional e informativo**, sem vínculo comercial com os estabelecimentos parceiros.
+Os preços das farmácias são extraídos em tempo real via **web scraping** de sites terceiros. Por conta da natureza dinâmica das páginas web (que podem sofrer alterações de layout ou implementar bloqueios temporários), **podem ocorrer divergências ou falhas pontuais na captura dos valores**. O teto ANVISA exibido é calculado puramente a partir da base pública da CMED. Este é um projeto **estritamente educacional**, sem nenhum vínculo comercial com as marcas, laboratórios ou estabelecimentos citados.
 
 ---
 
 ## 👩‍💻 Desenvolvido por
 
 **Isabelle Victoria de Souza**  
-*Desenvolvedora Full Stack em formação*
+Estudante de Análise e Desenvolvimento de Sistemas (ADS) & Desenvolvedora Full Stack em formação.
 
-* GitHub: [@IsisVct](https://github.com/IsisVct)
-* LinkedIn: [Isabelle Victoria](https://www.linkedin.com/in/isabelle-victoria/)
+* [GitHub](https://github.com/IsisVct)
+* [LinkedIn](https://www.linkedin.com/in/isabelle-victoria/)
 
 Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
