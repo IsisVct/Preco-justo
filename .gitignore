@@ -33,9 +33,20 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# CMED spreadsheet (download manually from ANVISA - see README)
+tabela_cmed.xlsx
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# documents
+*.md
+!README.md
+
+# local python and temporary directories
+venv/
+scratch/

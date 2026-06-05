@@ -1,26 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Work+Sans:wght@600;700;800&display=swap');
 @import "tailwindcss";
 
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --primary: #10b981;
+  --primary-foreground: #09090b;
+  --secondary: #18181b;
+  --secondary-foreground: #fafafa;
+  --card: #121214;
+  --card-foreground: #fafafa;
+  --border: #27272a;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #f59e0b;
+  --accent-foreground: #fef3c7;
+  --danger: #ef4444;
+}
+
+:root.light {
+  --background: #fbfbfb;
+  --foreground: #09090b;
+  --primary: #10b981;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --border: #e4e4e7;
+  --muted: #e4e4e7;
+  --muted-foreground: #71717a;
+  --accent: #d97706;
+  --accent-foreground: #78350f;
+  --danger: #ef4444;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
+
+/* Light mode: table row hover — muted/30 é invisível no light, usar zinc mais visível */
+:root.light .hover\:bg-muted\/30:hover {
+  background-color: #f0f0f3 !important;
+}
+
+/* Light mode: melhor farmácia — bg-emerald-950/20 fica escuro demais */
+:root.light .dark\:bg-emerald-950\/20 {
+  background-color: #ecfdf5 !important; /* emerald-50 */
+}
+
+/* Light mode: bloco "Apenas Varejo Privado" */
+:root.light .sus-private-card {
+  background-color: #f4f4f5; /* zinc-100 */
+  border-color: #d4d4d8;     /* zinc-300 */
+}
+:root.light .sus-private-icon {
+  background-color: #e4e4e7; /* zinc-200 */
+  color: #71717a;             /* zinc-500 */
+}
+:root.light .sus-private-badge {
+  background-color: #e4e4e7; /* zinc-200 */
+  color: #52525b;             /* zinc-600 */
+  border-color: #d4d4d8;     /* zinc-300 */
+}
+:root.light .sus-private-note {
+  color: #52525b; /* zinc-600 */
+}
+
+
+
+/* Custom Prototype Banner styling for Light Mode overrides */
+:root.light .prototype-banner {
+  background-color: #fffbeb; /* Amber 50 */
+  border-color: #fde68a; /* Amber 200 */
+}
+:root.light .prototype-text {
+  color: #92400e; /* Amber 800 */
+}
+:root.light .prototype-badge {
+  background-color: #fef3c7; /* Amber 100 */
+  color: #b45309; /* Amber 700 */
+  border-color: #fcd34d; /* Amber 300 */
+}
+
