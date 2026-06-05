@@ -21,9 +21,9 @@ export const metadata: Metadata = {
   title: "Preço Justo — Consulte o Preço Máximo de Medicamentos",
   description: "Não pague mais do que o teto da ANVISA permite. Consulte o Preço Máximo ao Consumidor (PMC) de medicamentos oficial da CMED com o Preço Justo.",
   icons: {
-    icon: "/logo-icon.png",
-    shortcut: "/logo-icon.png",
-    apple: "/logo-icon.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     title: "Preço Justo — Consulte o Preço Máximo de Medicamentos",
