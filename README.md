@@ -6,10 +6,13 @@
 
 ---
 
+<!-- 📸 PRINT DA TELA INICIAL: Insira aqui um print ou GIF da página inicial com o Autocomplete ativo -->
+<!-- Exemplo: ![Autocomplete Preço Justo](caminho/para/imagem.png) -->
+
 ## ✨ Funcionalidades
 
 - 🔍 **Busca inteligente** por nome comercial ou princípio ativo (base CMED com 21k+ medicamentos)
-- 💰 **Teto ANVISA em tempo real** calculado por estado (ICMS variável por UF)
+- 💰 **Teto ANVISA** calculado por estado (ICMS variável por UF)
 - 🏪 **Comparação ao vivo** de preços em Drogasil, Pague Menos e Ultrafarma via web scraping
 - 🏥 **Detecção automática** de produtos hospitalares (não disponíveis em varejo)
 - 🧪 **Validação de marca** para medicamentos de referência (evita comparar marcas diferentes)
@@ -20,16 +23,38 @@
 
 ---
 
+<!-- 📸 PRINT DOS RESULTADOS: Insira aqui um print da tabela de resultados exibindo o teto e os preços comparados -->
+<!-- Exemplo: ![Resultados do Preço Justo](caminho/para/imagem.png) -->
+
+## 🧠 Desafios e Dificuldades do Projeto
+
+O desenvolvimento do **Preço Justo** envolveu superar diversos desafios de Engenharia de Dados e Infraestrutura Web:
+
+1. **Tratamento de Dados Governamentais complexos (Planilhas CMED):**
+   * A tabela da ANVISA possui dezenas de colunas, cabeçalhos dinâmicos que mudam de posição mensalmente e um preâmbulo textual antes das tabelas de dados.
+   * **Solução:** Desenvolvemos scripts inteligentes em Python (Pandas) e Node.js que detectam dinamicamente a linha de cabeçalho verdadeira, pulam o preâmbulo administrativo e injetam os mais de 21 mil medicamentos de forma otimizada em lotes no Supabase.
+   <!-- 📸 PRINT DO TERMINAL/SCRIPT: Insira aqui um print do terminal rodando o script de importação da planilha -->
+
+2. **Web Scraping resiliente e Bypass de WAF/Bloqueios:**
+   * Farmácias utilizam WAFs (Web Application Firewalls) agressivos que bloqueiam requisições de servidores.
+   * **Solução:** Otimizamos o backend com um sistema de agentes/headers simulados, regras fuzzy para tratar dosagens (ex: mg, ml, caps) e retries programados em endpoints de busca.
+
+3. **Autocomplemento veloz (Autocomplete):**
+   * Buscar por texto puro em mais de 21 mil remédios no Supabase de forma rápida exigiu otimização.
+   * **Solução:** Criamos índices invertidos GIN (`to_tsvector`) no PostgreSQL para garantir buscas instantâneas a cada caractere digitado pelo usuário.
+
+---
+
 ## 🛠️ Stack
 
-| Camada | Tecnologia |
-|---|---|
-| Framework | [Next.js 15](https://nextjs.org) (App Router) |
-| Banco de dados | [Supabase](https://supabase.com) (PostgreSQL) |
-| Web scraping | Cheerio + fetch nativo |
-| Animações | Framer Motion |
-| Estilo | CSS customizado (sem Tailwind runtime) |
-| Fonte de dados | [Tabela CMED/ANVISA](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos) |
+| Camada | Tecnologia | Detalhes |
+|---|---|---|
+| **Frontend & Backend** | [Next.js 16](https://nextjs.org) (App Router) | React 19, TypeScript e Server-Side API Routes para bypass de CORS |
+| **Banco de Dados** | [Supabase](https://supabase.com) (PostgreSQL) | Índices GIN (`to_tsvector`) para busca textual ultrarrápida no autocomplete |
+| **Web Scraping** | Cheerio + Fetch nativo | Robôs de scraping integrados em rotas de API para busca ao vivo em Drogasil, Pague Menos e Ultrafarma |
+| **Interface & Estilo** | Tailwind CSS v4 + Framer Motion | Animações fluidas, variáveis CSS nativas (`@theme inline`), design responsivo otimizado para mobile e suporte a modo escuro/claro |
+| **Engenharia de Dados (ETL)** | Python 3 + Pandas | Scripts robustos para extração, limpeza e importação de planilhas CMED complexas (`BeautifulSoup4`, `openpyxl`, `supabase-py`) |
+| **Fonte de Dados** | [Tabela CMED/ANVISA](https://www.gov.br/anvisa/pt-br/assuntos/medicamentos/cmed/precos) | Base oficial de Preço Máximo ao Consumidor (PMC) do governo federal |
 
 ---
 
@@ -112,6 +137,12 @@ Os preços exibidos são extraídos automaticamente dos sites oficiais das farm�
 
 ---
 
-## 📄 Licença
+## 👩‍💻 Desenvolvido por
 
-MIT © [Isabela](https://github.com/IsisVct)
+**Isabelle Victoria de Souza**  
+*Desenvolvedora Full Stack em formação*
+
+* GitHub: [@IsisVct](https://github.com/IsisVct)
+* LinkedIn: [Isabelle Victoria](https://www.linkedin.com/in/isabelle-victoria/)
+
+Distribuído sob a licença MIT. Veja `LICENSE` para mais informações.
