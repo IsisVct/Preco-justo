@@ -169,7 +169,7 @@ export async function GET(request: Request) {
 
   const brandSlug = brandNameParam ? brandToSlug(brandNameParam) : undefined;
 
-  // 1. Verificar se existe preço no cache (Supabase) atualizado nas últimas 2 horas
+  // 1. Verificar se existe preço no cache (Supabase) atualizado nas últimas 12 horas
   // Usando a chave composta (pharmacy, medicine_name) para ser 100% determinístico
   if (supabase) {
     try {
@@ -182,8 +182,8 @@ export async function GET(request: Request) {
 
       if (cachedData && !cachedError) {
         const updatedAt = new Date(cachedData.updated_at).getTime();
-        const twoHoursInMs = 2 * 60 * 60 * 1000;
-        if (Date.now() - updatedAt < twoHoursInMs) {
+        const twelveHoursInMs = 12 * 60 * 60 * 1000;
+        if (Date.now() - updatedAt < twelveHoursInMs) {
           return NextResponse.json({
             success: true,
             price: Number(cachedData.price),

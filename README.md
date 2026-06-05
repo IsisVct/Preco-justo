@@ -147,7 +147,7 @@ create index idx_medicines_ai   on medicines using gin(to_tsvector('portuguese',
 
 ## ⚠️ Aviso Legal
 
-Os preços das farmácias são extraídos em tempo real via **web scraping** de sites terceiros e cacheados por até 2 horas para otimização de performance e prevenção de bloqueios de IP. Por conta da natureza dinâmica das páginas web (que podem sofrer alterações de layout ou implementar bloqueios temporários), **podem ocorrer divergências ou falhas pontuais na captura dos valores**. O teto ANVISA exibido é calculado puramente a partir da base pública da CMED. Este é um projeto **estritamente educacional**, sem nenhum vínculo comercial com as marcas, laboratórios ou estabelecimentos citados.
+Os preços das farmácias são extraídos em tempo real via **web scraping** de sites terceiros e cacheados por até 12 horas para otimização de performance e prevenção de bloqueios de IP. Por conta da natureza dinâmica das páginas web (que podem sofrer alterações de layout ou implementar bloqueios temporários), **podem ocorrer divergências ou falhas pontuais na captura dos valores**. O teto ANVISA exibido é calculado puramente a partir da base pública da CMED. Este é um projeto **estritamente educacional**, sem nenhum vínculo comercial com as marcas, laboratórios ou estabelecimentos citados.
 
 ---
 
