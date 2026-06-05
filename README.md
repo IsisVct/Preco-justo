@@ -133,7 +133,7 @@ create index idx_medicines_ai   on medicines using gin(to_tsvector('portuguese',
 
 ## ⚠️ Aviso Legal
 
-Os preços exibidos são extraídos automaticamente dos sites oficiais das farmácias e representam o **preço base** sem descontos dinâmicos (PBM, convênios, CPF do cliente). O teto ANVISA é calculado com base na tabela CMED pública. Este projeto é **educacional e informativo** — não possui nenhum vínculo comercial com as farmácias listadas.
+Os preços das farmácias são extraídos em tempo real via **web scraping** de sites terceiros. Por conta da natureza dinâmica das páginas web (que podem sofrer alterações de layout, seletores ou bloqueios temporários), **podem ocorrer erros, atrasos ou divergências nos preços exibidos**. Os valores apresentados são os preços base, sem considerar descontos adicionais por CPF, convênios ou programas de fidelidade (PBM). O teto ANVISA é calculado a partir da base pública da CMED. Este é um projeto **estritamente educacional e informativo**, sem vínculo comercial com os estabelecimentos parceiros.
 
 ---
 
