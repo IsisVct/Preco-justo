@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
+import { supabase } from '@/lib/supabase';
 import { DrogasilScraper } from './drogasil';
 import { UltrafarmaScraper } from './ultrafarma';
 import { PagueMenosScraper } from './paguemenos';
@@ -168,6 +169,34 @@ export async function GET(request: Request) {
 
   const brandSlug = brandNameParam ? brandToSlug(brandNameParam) : undefined;
 
+  // 1. Verificar se existe preço no cache (Supabase) atualizado nas últimas 2 horas
+  // Usando a chave composta (pharmacy, medicine_name) para ser 100% determinístico
+  if (supabase) {
+    try {
+      const { data: cachedData, error: cachedError } = await supabase
+        .from('scraped_prices')
+        .select('*')
+        .eq('pharmacy', pharmacy)
+        .eq('medicine_name', medicineName)
+        .maybeSingle();
+
+      if (cachedData && !cachedError) {
+        const updatedAt = new Date(cachedData.updated_at).getTime();
+        const twoHoursInMs = 2 * 60 * 60 * 1000;
+        if (Date.now() - updatedAt < twoHoursInMs) {
+          return NextResponse.json({
+            success: true,
+            price: Number(cachedData.price),
+            url: cachedData.url,
+            cached: true
+          });
+        }
+      }
+    } catch (cacheErr) {
+      console.error('Erro ao ler cache do Supabase:', cacheErr);
+    }
+  }
+
   try {
     const isSearchOrHome = !exactUrl ||
       exactUrl.includes('/busca') ||
@@ -203,6 +232,23 @@ export async function GET(request: Request) {
     if (!result.success && pharmacy === 'Drogasil') {
       await new Promise(r => setTimeout(r, 1500));
       result = await scraper.scrapePrice(exactUrl);
+    }
+
+    // Se o scrape deu certo, salvar/atualizar na tabela de cache do Supabase (por chave composta)
+    if (result.success && typeof result.price === 'number' && supabase) {
+      try {
+        await supabase
+          .from('scraped_prices')
+          .upsert({
+            pharmacy,
+            medicine_name: medicineName,
+            url: exactUrl,
+            price: result.price,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'pharmacy,medicine_name' });
+      } catch (cacheErr) {
+        console.error('Erro ao salvar cache no Supabase:', cacheErr);
+      }
     }
 
     return NextResponse.json(result);

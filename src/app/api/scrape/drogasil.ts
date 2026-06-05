@@ -242,7 +242,8 @@ export class DrogasilScraper implements PharmacyScraper {
                         'comprimidos', 'comprimido', 'cápsulas', 'cápsula', 'capsulas', 'capsula',
                         'drágeas', 'drágea', 'drageas', 'dragea', 'gotas', 'gota', 'solução', 'solucao',
                         'oral', 'injetável', 'injetavel', 'ampola', 'ampolas', 'xarope', 'creme',
-                        'pomada', 'gel', 'spray', 'adesivo', 'envelopes', 'envelope', 'kit', 'kits'
+                        'pomada', 'gel', 'spray', 'adesivo', 'envelopes', 'envelope', 'kit', 'kits',
+                        'unidade', 'unidades', 'und', 'frasco', 'frascos', 'sache', 'saches', 'sachê', 'sachês'
                     ]);
 
                     const criticalWords = termWords.filter(w => {
